@@ -10,7 +10,7 @@ VALID_ACCESS_CODES_FILE = 'valid_access_codes.json'
 USED_ACCESS_CODES_FILE = 'used_access_codes.json'
 
 # PDFファイルのパス
-PDF_FILE_PATH = 'static/myfile.pdf'
+PDF_FILE_PATH = 'static/HUB-2.pdf'
 
 # JSONファイルからパスコードを読み込む関数
 def load_json(file_path):
@@ -37,8 +37,8 @@ def download_page():
             used_access_codes.append(access_code)
             save_json({'used_access_codes': used_access_codes}, USED_ACCESS_CODES_FILE)
 
-            # PDFファイルを送信
-            return send_file(PDF_FILE_PATH, as_attachment=True)
+            # ダウンロード用のリンクを提供
+            return redirect(url_for('download_link'))
 
         else:
             flash('無効なアクセスコードです。', 'error')
@@ -46,6 +46,18 @@ def download_page():
 
     return render_template('download.html')
 
-if __name__ == '__main__':
-    # アプリを実行
-    app.run(debug=True)
+@app.route('/download_link')
+def download_link():
+    return render_template('download_link.html')
+
+@app.route('/download_complete_page')
+def download_complete_page():
+    return render_template('download_complete.html')
+
+@app.route('/download_file')
+def download_file():
+    return send_file(PDF_FILE_PATH, as_attachment=True)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT"))  # ポート番号を環境変数から取得
+    app.run(host='0.0.0.0', port=port)  # Flaskアプリを起動

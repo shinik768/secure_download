@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダウンロードリンク</title>
+    <script>
+        // ページが読み込まれた時にPDFをダウンロードし、その後にページ遷移
+        window.onload = function() {
+            // PDFファイルをダウンロード
+            window.location.href = "{{ url_for('download_file') }}";
+            // 2秒後に成功メッセージページに遷移
+            setTimeout(function() {
+                window.location.href = "{{ url_for('download_complete_page') }}";
+            }, 1000); // 1秒後に遷移
+        }
+    </script>
+</head>
+<body>
+    <h1>PDFをダウンロード中です...</h1>
+</body>
+</html>
