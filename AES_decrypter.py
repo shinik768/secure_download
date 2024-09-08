@@ -26,6 +26,8 @@ def execute_decrypt():
     with open('/etc/secrets/private.pem', 'rb') as f:
         private_key = f.read()
 
-    decrypt_pdf_stream = decrypt_pdf(encrypted_pdf, private_key) 
+    decrypt_pdf_stream = decrypt_pdf(encrypted_pdf, private_key)
+
+    print(encrypted_pdf)
 
     return decrypt_pdf_stream

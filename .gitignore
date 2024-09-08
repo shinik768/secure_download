@@ -166,3 +166,4 @@ access_codes_generator.py
 *.pem
 generate_keys.py
 etc/secrets/
+access_codes_hasher.py
