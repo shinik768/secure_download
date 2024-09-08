@@ -165,4 +165,4 @@ AES_encrypter.py
 access_codes_generator.py
 *.pem
 generate_keys.py
-etc/secret/
+etc/secrets/
