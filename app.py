@@ -1,3 +1,4 @@
+from AES_decrypter import execute_decrypt
 from flask import Flask, render_template, request, send_file, redirect, url_for, flash
 import json
 import os
@@ -6,11 +7,8 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'abc')
 
 # パスコードリストのファイルパス
-VALID_ACCESS_CODES_FILE = 'valid_access_codes.json'
+VALID_ACCESS_CODES_FILE = '/etc/secrets/valid_access_codes.json'
 USED_ACCESS_CODES_FILE = 'used_access_codes.json'
-
-# PDFファイルのパス
-PDF_FILE_PATH = 'static/HUB-2.pdf'
 
 # JSONファイルからパスコードを読み込む関数
 def load_json(file_path):
@@ -56,8 +54,9 @@ def download_complete_page():
 
 @app.route('/download_file')
 def download_file():
-    return send_file(PDF_FILE_PATH, as_attachment=True)
+    decrypted_pdf_stream = execute_decrypt()
+    return send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=True, mimetype="application/pdf")
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT"))  # ポート番号を環境変数から取得
+    port = int(os.environ.get("PORT", 5000))  # ポート番号を環境変数から取得
     app.run(host='0.0.0.0', port=port)  # Flaskアプリを起動
