@@ -4,7 +4,7 @@ import random
 import json
 import string
 
-def generate_access_codes(num_codes=5000, code_length=12):
+def generate_access_codes(num_codes=2000, code_length=12):
     # 紛らわしい文字を除外したキャラクターセット
     characters = ''.join(filter(lambda x: x not in ['O', '0', 'I', 'l'], string.ascii_letters + string.digits))
 

@@ -167,3 +167,6 @@ access_codes_generator.py
 generate_keys.py
 etc/secrets/
 access_codes_hasher.py
+qrcode_generator.py
+qr_codes.pdf
+NotoSansJP-Regular.ttf
