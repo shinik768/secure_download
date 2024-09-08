@@ -1,6 +1,17 @@
 from AES_decrypter import execute_decrypt
 from matched_hashed_access_codes_provider import matched_hashed_code
-from flask import Flask, render_template, request, send_file, redirect, url_for, flash, session, render_template_string
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_file,
+    redirect,
+    url_for,
+    flash,
+    session,
+    render_template_string,
+    make_response
+)
 import json
 import os
 
@@ -95,10 +106,14 @@ def download_file():
     # セッションでアクセスコードが有効かを確認
     if session.get('access_code_valid'):
         decrypted_pdf_stream = execute_decrypt()
-        # ストリームのカーソルを先頭に戻す
         decrypted_pdf_stream.seek(0)
-        # PDFをブラウザの別タブで表示するためのリダイレクト
-        return send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=False, mimetype="application/pdf")
+        # レスポンスの作成
+        response = make_response(send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=False, mimetype="application/pdf"))
+        # キャッシュを無効化
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     else:
         flash('無効なアクセスです。', 'error')
         return redirect(url_for('download_page'))
