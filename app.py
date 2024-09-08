@@ -24,7 +24,7 @@ def save_json(data, file_path):
 @app.route('/', methods=['GET', 'POST'])
 def download_page():
     if session.get('access_code_valid'):
-        return render_template('download_link.html')
+        return redirect(url_for('download_link'))
     
     if request.method == 'POST':
         access_code = request.form.get('access_code')
@@ -55,7 +55,7 @@ def download_page():
 @app.route('/<access_code>')
 def check_access_code(access_code):
     if session.get('access_code_valid'):
-        return render_template('download_link.html')
+        return redirect(url_for('download_link'))
     
     # パスコードリストと使用済みパスコードを読み込む
     used_access_codes = load_json(HASHED_USED_ACCESS_CODES_FILE).get('access_codes', [])
@@ -98,7 +98,7 @@ def download_file():
         # ストリームのカーソルを先頭に戻す
         decrypted_pdf_stream.seek(0)
         # PDFをブラウザの別タブで表示するためのリダイレクト
-        return send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=True, mimetype="application/pdf")
+        return send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=False, mimetype="application/pdf")
     else:
         flash('無効なアクセスです。', 'error')
         return redirect(url_for('download_page'))
