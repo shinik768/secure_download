@@ -7,9 +7,14 @@
     <script>
         // ページが読み込まれた時にPDFをダウンロードし、その後にページ遷移
         window.onload = function() {
+            // ユニークなクエリパラメータを追加してキャッシュを防ぐ
+            const uniqueQueryParam = new Date().getTime(); // 現在の時間をクエリに追加
+            const downloadUrl = "{{ url_for('download_file') }}?v=" + uniqueQueryParam;
+
             // PDFファイルをダウンロード
-            window.location.href = "{{ url_for('download_file') }}";
-            // 2秒後に成功メッセージページに遷移
+            window.location.href = downloadUrl;
+
+            // 1秒後に成功メッセージページに遷移
             setTimeout(function() {
                 window.location.href = "{{ url_for('download_complete_page') }}";
             }, 1000); // 1秒後に遷移

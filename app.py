@@ -1,5 +1,6 @@
 from AES_decrypter import execute_decrypt
 from matched_hashed_access_codes_provider import matched_hashed_code
+from datetime import timedelta
 from flask import (
     Flask,
     render_template,
@@ -12,15 +13,26 @@ from flask import (
     render_template_string,
     make_response
 )
+from flask_cors import CORS
+
 import json
 import os
+import time
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.getenv('SECRET_KEY')
 
 # パスコードリストのファイルパス
 HASHED_VALID_ACCESS_CODES_FILE = '/etc/secrets/hashed_valid_access_codes.json'
 HASHED_USED_ACCESS_CODES_FILE = 'hashed_used_access_codes.json'
+
+"""
+@app.before_request
+def make_session_permanent():
+    session.permanent = True  # セッションを永続化
+    #app.permanent_session_lifetime = timedelta(minutes=30) 
+"""
 
 # JSONファイルからパスコードを読み込む関数
 def load_json(file_path):
@@ -90,9 +102,9 @@ def check_access_code(access_code):
 
 @app.route('/download_link')
 def download_link():
-    # アクセスコードが有効かを確認
     if session.get('access_code_valid'):
-        return render_template('download_link.html')
+        unique_query_param = str(int(time.time()))  # ユニークなタイムスタンプを生成
+        return render_template('download_link.html', unique_query_param=unique_query_param)
     else:
         flash('無効なアクセスです。', 'error')
         return redirect(url_for('download_page'))
@@ -108,7 +120,8 @@ def download_file():
         decrypted_pdf_stream = execute_decrypt()
         decrypted_pdf_stream.seek(0)
         # レスポンスの作成
-        response = make_response(send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=False, mimetype="application/pdf"))
+        response = make_response(send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=True, mimetype='application/octet-stream'))
+        response.headers['Content-Length'] = decrypted_pdf_stream.getbuffer().nbytes
         # キャッシュを無効化
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
         response.headers['Pragma'] = 'no-cache'
