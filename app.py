@@ -27,12 +27,10 @@ app.secret_key = os.getenv('SECRET_KEY')
 HASHED_VALID_ACCESS_CODES_FILE = '/etc/secrets/hashed_valid_access_codes.json'
 HASHED_USED_ACCESS_CODES_FILE = 'hashed_used_access_codes.json'
 
-"""
 @app.before_request
 def make_session_permanent():
     session.permanent = True  # セッションを永続化
-    #app.permanent_session_lifetime = timedelta(minutes=30) 
-"""
+    app.permanent_session_lifetime = timedelta(days=60) 
 
 # JSONファイルからパスコードを読み込む関数
 def load_json(file_path):
