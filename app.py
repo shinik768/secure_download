@@ -118,7 +118,7 @@ def download_file():
         decrypted_pdf_stream = execute_decrypt()
         decrypted_pdf_stream.seek(0)
         # レスポンスの作成
-        response = make_response(send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=False, mimetype='application/pdf'))
+        response = make_response(send_file(decrypted_pdf_stream, download_name='HUB.pdf', as_attachment=True, mimetype='application/pdf'))
         response.headers['Content-Length'] = decrypted_pdf_stream.getbuffer().nbytes
         # キャッシュを無効化
         response.headers['Content-Disposition'] = 'attachment; filename=HUB.pdf'
