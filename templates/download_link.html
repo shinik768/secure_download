@@ -14,10 +14,10 @@
             // PDFファイルをダウンロード
             window.location.href = downloadUrl;
 
-            // 1秒後に成功メッセージページに遷移
+            // 3秒後に成功メッセージページに遷移
             setTimeout(function() {
                 window.location.href = "{{ url_for('download_complete_page') }}";
-            }, 1000); // 1秒後に遷移
+            }, 3000); // 1秒後に遷移
         }
     </script>
 </head>
